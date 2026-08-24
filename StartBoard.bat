@@ -1,17 +1,22 @@
 @echo off
-chcp 65001 >nul
-title Доска цели — не закрывай это окно
+title Goal Board - keep this window open
 cd /d "%~dp0"
 
 if not exist node_modules (
     echo.
-    echo Первый запуск: устанавливаю библиотеки, это займёт пару минут...
+    echo First launch: installing libraries, may take a few minutes...
     echo.
     call npm install
+    if errorlevel 1 (
+        echo.
+        echo npm install failed. Check internet connection and Node.js.
+        pause
+        exit /b 1
+    )
 )
 
 echo.
-echo Запускаю доску... Браузер откроется сам.
-echo Это окно можно свернуть. Закрой его, когда закончишь.
+echo Starting the board... Browser will open automatically.
+echo You can minimize this window. Close it when you are done.
 echo.
 call npx vite --open

@@ -1,49 +1,55 @@
 @echo off
-cd /d "%~dp0"
+setlocal
 title Goal Board Widget
-
-rem Faster and more reliable download source for the Electron engine
-set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+cd /d "%~dp0"
 
 where npm >nul 2>nul
 if errorlevel 1 (
+  echo [!] Node.js is not installed. Get it from https://nodejs.org first.
+  pause
+  exit /b 1
+)
+
+rem Download Electron binary from a fast mirror (only affects this session)
+set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+set ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
+
+set ELECTRON_PATH=node_modules\electron\dist\electron.exe
+
+if not exist node_modules (
+  echo First launch: installing libraries, please wait a few minutes...
+  call npm install --no-audit --no-fund
+)
+
+rem --- repair step 1: run Electron's own downloader directly ---
+if not exist "%ELECTRON_PATH%" (
+  echo The Electron app file is missing. Trying to download it directly...
+  if exist "node_modules\electron\install.js" (
+    node "node_modules\electron\install.js"
+  )
+)
+
+rem --- repair step 2: full clean reinstall ---
+if not exist "%ELECTRON_PATH%" (
+  echo Still missing. Doing a full clean reinstall, please wait...
+  rd /s /q node_modules 2>nul
+  del /q package-lock.json 2>nul
+  call npm install --no-audit --no-fund
+  if exist "node_modules\electron\install.js" (
+    node "node_modules\electron\install.js"
+  )
+)
+
+if not exist "%ELECTRON_PATH%" (
   echo.
-  echo  ERROR: npm was not found on this computer.
-  echo  Please install Node.js from https://nodejs.org first, then try again.
+  echo [X] ERROR: electron app file still not found at %CD%
+  echo     1. Check Windows Security - Protection history:
+  echo        the antivirus may be quarantining electron.exe.
+  echo     2. Or open a terminal in this folder and run:  npm run start
   echo.
   pause
   exit /b 1
 )
 
-if not exist "node_modules\electron\dist\electron.exe" (
-  echo.
-  echo ============================================================
-  echo  FIRST LAUNCH or REPAIR: downloading Electron ^(about 100 MB^).
-  echo  This happens once and can take a few minutes. Please wait.
-  echo ============================================================
-  echo.
-  if not exist "node_modules" (
-    call npm install --no-audit --no-fund
-  )
-  if not exist "node_modules\electron\dist\electron.exe" (
-    echo.
-    echo  The engine file is missing. Re-downloading it from a mirror...
-    echo.
-    rd /s /q "node_modules\electron" 2>nul
-    call npm install electron --no-audit --no-fund --force
-  )
-  if not exist "node_modules\electron\dist\electron.exe" (
-    echo.
-    echo  ERROR: still cannot download the engine file.
-    echo  Please check your internet connection and run this file again.
-    echo.
-    pause
-    exit /b 1
-  )
-)
-
-echo.
-echo  Starting Goal Board widget...
-echo.
-start "" "node_modules\electron\dist\electron.exe" "%~dp0"
-exit
+start "" "%ELECTRON_PATH%" "%~dp0"
+exit /b 0

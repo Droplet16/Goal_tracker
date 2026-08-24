@@ -44,7 +44,7 @@ export default function Sticker({
   const doubleTape = seeded(day, 3) > 0.74;
   const phase = phaseOf(day);
 
-  // След от сорванного стикера: карандашный контур на стене
+  // След от сорванного стикера: карандашный контур на пробке
   if (removed && !restoring) {
     const clickable = mode === "restore";
     return (
@@ -100,7 +100,7 @@ export default function Sticker({
       {doubleTape && <span className="tape tape-b" aria-hidden="true" />}
       <span className="num">{day}</span>
       <span className="date hidden sm:block">{dayLabel(startDate, day)}</span>
-      {floatKey > 0 && peeling && (
+      {floatKey > 0 && floatVisible && (
         <span key={floatKey} className="hours-float">
           +{HOURS_PER_DAY} ч
         </span>

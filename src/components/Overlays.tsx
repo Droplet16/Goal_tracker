@@ -59,7 +59,7 @@ export function ResetModal({
           Сбросить доску?
         </h3>
         <p className="mt-2 text-sm font-medium leading-relaxed text-ink-soft">
-          Все 60 стикеров вернутся на стену, а счётчик часов обнулится.
+          Все 60 стикеров вернутся на пробку, а счётчик часов обнулится.
           Название цели и дата старта останутся.
         </p>
         <div className="mt-6 flex justify-center gap-3">

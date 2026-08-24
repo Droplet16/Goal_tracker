@@ -1,19 +1,17 @@
 @echo off
-chcp 65001 >nul
 cd /d "%~dp0"
-title Доска цели - виджет
+title Goal Board Widget
 
 if not exist "node_modules\electron\dist\electron.exe" (
-  echo.
   echo ============================================================
-  echo  Первый запуск: скачиваю Electron ^(около 100 МБ, один раз^).
-  echo  Это может занять несколько минут - просто подожди.
+  echo  FIRST LAUNCH: downloading Electron, about 100 MB, one time.
+  echo  It may take a few minutes - just wait.
   echo ============================================================
   echo.
   call npm install --no-audit --no-fund
   if errorlevel 1 (
     echo.
-    echo Не получилось установить. Проверь интернет и Node.js ^(nodejs.org^).
+    echo npm install failed. Check internet connection and Node.js.
     pause
     exit /b 1
   )

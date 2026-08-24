@@ -1,0 +1,14 @@
+{
+  "name": "goal-board-widget",
+  "productName": "Доска цели",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Настольный виджет: доска стикеров на 60 дней",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

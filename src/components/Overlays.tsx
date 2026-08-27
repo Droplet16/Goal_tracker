@@ -59,7 +59,7 @@ export function ResetModal({
           Сбросить доску?
         </h3>
         <p className="mt-2 text-sm font-medium leading-relaxed text-ink-soft">
-          Все 60 стикеров вернутся на пробку, а счётчик часов обнулится.
+          Все 60 стикеров вернутся на пробку, а счётчик времени обнулится.
           Название цели и дата старта останутся.
         </p>
         <div className="mt-6 flex justify-center gap-3">
@@ -78,14 +78,14 @@ export function ResetModal({
 export function WinOverlay({
   open,
   goal,
-  hours,
+  timeSpent,
   days,
   onRestart,
   onClose,
 }: {
   open: boolean;
   goal: string;
-  hours: number;
+  timeSpent: string;
   days: number;
   onRestart: () => void;
   onClose: () => void;
@@ -111,7 +111,7 @@ export function WinOverlay({
           <p className="mt-2 font-marker text-2xl leading-snug text-ink-soft">«{goal}»</p>
         )}
         <p className="mt-4 text-sm font-semibold text-ink-soft">
-          {hours} часов работы · {days} дней дисциплины · результат — навсегда
+          {timeSpent} работы · {days} дней дисциплины · результат — навсегда
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <button type="button" className="btn btn-lime" onClick={onRestart}>

@@ -3,12 +3,12 @@ import Sticker from "./components/Sticker";
 import { PushPin, ResetModal, Toasts, WinOverlay, type ToastData } from "./components/Overlays";
 import { burst, confettiRain } from "./fx";
 import {
-  HOURS_PER_DAY,
+  MIN_PER_DAY,
   PHASES,
   TOTAL_DAYS,
   addDays,
-  defaultState,
   fmtDate,
+  fmtMinutes,
   loadState,
   phaseOf,
   saveState,
@@ -31,7 +31,7 @@ const ALL_DAYS = Array.from({ length: TOTAL_DAYS }, (_, i) => i + 1);
 const PEEL_MSGS = [
   "Так держать!",
   "Минус один день!",
-  "Ещё +2 часа в копилку",
+  "Копилка времени растёт",
   "Дисциплина решает",
   "Цель ближе!",
   "Не останавливайся!",
@@ -54,7 +54,7 @@ export default function App() {
   }, [state]);
 
   const done = state.removed.length;
-  const hours = done * HOURS_PER_DAY;
+  const timeSpent = fmtMinutes(done * MIN_PER_DAY);
   const pct = (done / TOTAL_DAYS) * 100;
   const remaining = TOTAL_DAYS - done;
   const finishDate = addDays(state.startDate, TOTAL_DAYS);
@@ -122,8 +122,14 @@ export default function App() {
   const resetBoard = () => {
     setWinOpen(false);
     setResetOpen(false);
-    setState((s) => ({ ...defaultState(), goal: s.goal, startDate: s.startDate }));
+    setState((s) => ({ removed: [], goal: s.goal, startDate: s.startDate }));
     pushToast("Доска обновлена — все 60 стикеров на месте", "#b8e356");
+  };
+
+  const setStartDate = (value: string) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+    setState((s) => ({ ...s, startDate: value }));
+    pushToast(`Дата старта: ${fmtDate(addDays(value, 0))} — стикеры пересчитаны`, "#ffdf59");
   };
 
   const dust = useMemo(
@@ -254,7 +260,7 @@ export default function App() {
                 <div className="hidden h-10 w-px bg-[#d8cfba] sm:block" />
                 <div className="hidden sm:block">
                   <p className="font-display text-2xl leading-none text-ink md:text-3xl">
-                    {hours} ч
+                    {timeSpent}
                   </p>
                   <p className="mt-1 text-[11px] font-bold text-ink-soft">вложено в цель</p>
                 </div>
@@ -345,10 +351,21 @@ export default function App() {
                     )}
 
                     <div className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-[11.5px] font-bold text-ink-soft">
-                      <span>старт: {fmtDate(addDays(state.startDate, 0))}</span>
+                      <label
+                        className="flex cursor-pointer items-center gap-1.5"
+                        title="Нажми и выбери дату старта в календаре — стикеры пересчитают даты сами"
+                      >
+                        старт:
+                        <input
+                          type="date"
+                          className="start-date"
+                          value={state.startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                        />
+                      </label>
                       <span>финиш: {fmtDate(finishDate)}</span>
                       <span className="rounded-full bg-[#ffe9a0] px-2.5 py-0.5 text-[#6b5300]">
-                        {HOURS_PER_DAY} часа в день
+                        {MIN_PER_DAY} минут в день
                       </span>
                     </div>
                   </div>
@@ -377,7 +394,7 @@ export default function App() {
 
           {/* Записки на стене */}
           <div className="note hidden -left-52 top-24 rotate-[-7deg] xl:block">
-            правило простое: <b>2 часа в день</b> — сорвал стикер, день засчитан
+            правило простое: <b>{MIN_PER_DAY} минут в день</b> — сорвал стикер, день засчитан
           </div>
           <div className="note hidden -right-52 top-40 rotate-[5deg] xl:block">
             не пропусти <b>два дня подряд</b> — цепочка сильнее мотивации
@@ -392,7 +409,6 @@ export default function App() {
               className="btn btn-lime flex items-center gap-2 text-[15px]"
               onClick={peelNext}
               disabled={!nextDay}
-              style={{ opacity: nextDay ? 1 : 0.5, cursor: nextDay ? "pointer" : "default" }}
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path
@@ -442,7 +458,7 @@ export default function App() {
       <WinOverlay
         open={winOpen}
         goal={state.goal}
-        hours={hours}
+        timeSpent={timeSpent}
         days={TOTAL_DAYS}
         onRestart={resetBoard}
         onClose={() => setWinOpen(false)}

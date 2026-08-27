@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { dayLabel, phaseOf, seeded, HOURS_PER_DAY, type Mode } from "../lib";
+import { dayLabel, phaseOf, seeded, MIN_PER_DAY, type Mode } from "../lib";
 
 interface Props {
   day: number;
@@ -102,7 +102,7 @@ export default function Sticker({
       <span className="date hidden sm:block">{dayLabel(startDate, day)}</span>
       {floatKey > 0 && floatVisible && (
         <span key={floatKey} className="hours-float">
-          +{HOURS_PER_DAY} ч
+          +{MIN_PER_DAY} мин
         </span>
       )}
     </button>

@@ -221,6 +221,10 @@ body {
 .btn-lime:hover {
   filter: brightness(1.05);
 }
+.btn-lime:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
 .btn-ghosty {
   background: rgba(120, 105, 70, 0.07);
   border-color: rgba(120, 105, 70, 0.25);
@@ -333,6 +337,24 @@ body {
   color: rgba(90, 80, 62, 0.45);
 }
 
+/* календарик даты старта на бумажке */
+.start-date {
+  font: inherit;
+  font-weight: 800;
+  font-size: 12px;
+  color: #5c5142;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px dashed rgba(120, 100, 60, 0.45);
+  border-radius: 8px;
+  padding: 3px 8px;
+  cursor: pointer;
+  accent-color: #e0483e;
+}
+.start-date:hover {
+  background: #fff;
+  border-style: solid;
+}
+
 /* ── Стикеры ─────────────────────────────────────────────────────── */
 .board-grid {
   display: grid;
@@ -393,19 +415,9 @@ body {
   transform: rotate(var(--rot)) translateY(0) scale(0.98);
 }
 
-.phase-green {
+.sticker {
   background:
     radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.55), transparent 42%),
-    linear-gradient(160deg, var(--c1) 0%, var(--c2) 88%, var(--c3) 100%);
-}
-.phase-yellow {
-  background:
-    radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.5), transparent 42%),
-    linear-gradient(160deg, var(--c1) 0%, var(--c2) 88%, var(--c3) 100%);
-}
-.phase-rose {
-  background:
-    radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.5), transparent 42%),
     linear-gradient(160deg, var(--c1) 0%, var(--c2) 88%, var(--c3) 100%);
 }
 .phase-green {
@@ -488,7 +500,8 @@ body {
   font-family: var(--font-marker);
   font-weight: 700;
   font-size: 26px;
-  color: var(--numc);
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(50, 30, 0, 0.5);
   pointer-events: none;
   animation: float-up 0.9s ease-out forwards;
   z-index: 6;

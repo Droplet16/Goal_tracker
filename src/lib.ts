@@ -1,6 +1,7 @@
 export const TOTAL_DAYS = 60;
-export const HOURS_PER_DAY = 2;
-export const STORAGE_KEY = "sticker-goal-board-v1";
+export const MIN_PER_DAY = 30; // минут в день на цель
+export const DEFAULT_START_DATE = "2026-08-27";
+export const STORAGE_KEY = "sticker-goal-board-v3";
 
 export type Mode = "peel" | "restore";
 
@@ -50,11 +51,7 @@ export interface BoardState {
 }
 
 export function defaultState(): BoardState {
-  return {
-    removed: [],
-    goal: "",
-    startDate: new Date().toISOString().slice(0, 10),
-  };
+  return { removed: [], goal: "", startDate: DEFAULT_START_DATE };
 }
 
 export function loadState(): BoardState {
@@ -70,7 +67,7 @@ export function loadState(): BoardState {
       startDate:
         typeof p.startDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(p.startDate)
           ? p.startDate
-          : new Date().toISOString().slice(0, 10),
+          : DEFAULT_START_DATE,
     };
   } catch {
     return defaultState();
@@ -106,3 +103,12 @@ export function fmtDate(d: Date): string {
 
 export const dayLabel = (startDate: string, day: number) =>
   fmtDate(addDays(startDate, day - 1));
+
+/** 90 → «1 ч 30 мин», 30 → «30 мин», 120 → «2 ч» */
+export function fmtMinutes(total: number): string {
+  if (total <= 0) return "0 мин";
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  if (h && m) return `${h} ч ${m} мин`;
+  return h ? `${h} ч` : `${m} мин`;
+}
